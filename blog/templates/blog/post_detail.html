@@ -1,21 +1,84 @@
 {% extends 'blog/base.html' %}
-
 {% block content %}
-    <article class="post">
-        <aside class="actions">
-            {% if user.is_authenticated %}
-               <a class="btn btn-secondary" href="{% url 'post_edit' pk=post.pk %}">
-                  {% include './icon/pencil-fill.svg' %}
-               </a>
-            {% endif %}
-        </aside>
-        {% if post.published_date %}
-            <time class="date">
-                {{ post.published_date }}
-            </time>
-        {% endif %}
-        <h2>{{ post.title }}</h2>
-        <p>{{ post.text|linebreaksbr }}</p>
-    </article>
-{% endblock %}
+<article class="post">
+  <aside class="actions">
+    {% if user.is_authenticated %}
+    <a class="btn btn-secondary" href="{% url 'post_edit' slug=post.slug %}">Edit post
+      {% include './icon/pencil-fill.svg' %}
+    </a>
+    
+    {% endif %}
+  </aside>
+  <div>
+    <h1>{% if post.featured_image %}
+      <a>
+        <img src="{{ post.thumbnail_image.url }}"
+          class="rounded-circle"
+          alt="post.title"
+          style="width: 99px;"
+        />
+      </a>
+      {% endif %}
+      &nbsp;&nbsp;{{ post.title }}</h1> <br> 
+  </div>
+  {% if post.featured_image %}
+  <img src="{{ post.featured_image.url }}" class="rounded featured-image-list" alt="##" style="width: 700px; height: 450px;"><br><br>
+  {% endif %}
+  {% if post.published_date %}
+  <p>Category: <a href="{% url 'category' category=post.category.slug %}" style="text-decoration: none; color: rgb(134, 90, 1)">{{post.category}}</a></p>
+  <p>
+  <p class="card-text">
+    <small class="text-muted"
+      ><time class="date"
+        >Last updated: {{ post.published_date }}
+      </time></small
+    >
+  </p>
+  {% endif %}
+  <p>{{ post.text|linebreaksbr }}</p>
+  <p>Author: {{ post.author|linebreaksbr }}</p>
 
+    {% for tag in post.tag.all %}
+    <a
+      href="{% url 'tags' tag=tag.slug %}"
+      style="text-decoration: none; color: rgb(134, 90, 1)"
+      >{{tag}}</a
+    >
+    {% endfor %}
+  </p>
+  <hr />
+  <h3>Add a comment</h3>
+  <form action="" method="post" style="width: fit-content;">
+    {% csrf_token %} {{ comment_form.as_p }}
+    <button type="submit">Submit</button>
+  </form>
+  <hr />
+  {% for comment in comment %}
+    <div >
+        <p class="info">{{ comment.name }} | {{ comment.created_on }}</p>
+            {{ comment.body | linebreaks }}
+
+        {% for replay in comment.replies.all %}
+            <p class="info">{{ replay.name }} | {{ replay.created_on }}</p>
+            <li>{{ replay.body }}</li>
+        {% endfor %}
+
+        <button class="btn btn-sm btn-primary" id="reply" type="button" daria-expanded="false">
+          Reply
+      </button>
+        <form action="." type="hidden" method="post" style="width: fit-content;" id="reply-btn">
+            {{ comment_form.as_p }}
+            {% csrf_token %}
+            
+            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+            <input class="btn btn-primary" type="submit" value="Submit">
+        </form>
+    </div>
+{% empty %}
+<h4>There are no comments yet.</h4>
+{% endfor %}
+  <!-- <hr /> -->
+  
+  <!-- <p>{{ post.tag|linebreaksbr }} tags</p> -->
+</article>
+{% endblock %}

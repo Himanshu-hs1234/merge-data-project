@@ -7,9 +7,9 @@
   <div class="row">
     <div class="card col-lg-6 offset-lg-3 mb-3">
       <div class="row">
-        {% if user.profile.image %}
+        {% if user.image %}
         
-        <img class="card-img-top col-sm-3 col-4 my-3" src="{{ profile.image.url }}" alt="{{ user.username }}">
+        <img class="card-img-top col-sm-3 col-4 my-3" src="{{ user.image.url }}" alt="{{ user.username }}">
         {% else %}
         <img class="card-img-top col-sm-3 col-4 my-3" src="{% static 'img/avatar.svg' %}" alt="{{ user.username }}">
         {% endif %}

@@ -1,14 +1,15 @@
 <!-- templates/users/edit_profile.html -->
 {% extends 'blog/base.html' %}
-
+{% load static %}
 <!--Register-->
 {% block content %}
 <header class="page-header">
   <div class="container py-5">
     <h1>Edit Profile</h1>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
+
       <button class="btn btn-primary" type="submit">Edit profile</button>
   </div>
   

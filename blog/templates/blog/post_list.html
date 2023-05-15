@@ -1,14 +1,57 @@
-{% extends 'blog/base.html' %}
+{% extends 'blog/base.html' %} {% block content %} 
+<div class="row">
+{% for post in posts %}
+<!-- <article class="post"> -->
+  <!-- <div class="row row-cols-1 row-cols-md-2 g-4"> -->
+    <div class="col-md-6">
+    <div class="card">
+      {% if post.thumbnail_image %}
+      <a href="{% url 'post_detail' slug=post.slug %}">
+        <img src="{{ post.thumbnail_image.url }}"
+          class="rounded featured-image-list"
+          alt="post.title"
+          style="width: 545px; height: 300px; "
+        />
+      </a>
+      {% endif %}
+      <div class="card-body">
+        <h2>
+          <a
+            href="{% url 'post_detail' slug=post.slug %}"
+            style="text-decoration: none; color: rgb(128, 16, 16)"
+            >{{ post.title }}</a
+          >
+        </h2>
+        <p style="color: rgb(130, 7, 7);">
+          Category:
+          <a
+            href="{% url 'category' category=post.category.slug %}"
+            style="text-decoration: none; color: rgb(134, 90, 1)"
+            >{{post.category}}</a
+          >
+        </p>
+        <p class="card-text">{{ post.text|linebreaksbr }}</p>
+        <p class="card-text">
+          <small class="text-muted"
+            ><time class="date"
+              >Last updated: {{ post.published_date }}
+            </time></small
+          >
+          <p>Author: {{ post.author|linebreaksbr }}</p>
 
-{% block content %}
-    {% for post in posts %}
-        <article class="post">
-            <time class="date">
-                {{ post.published_date }}
-            </time>
-            <h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
-            <p>{{ post.text|linebreaksbr }}</p>
-        </article>
-    {% endfor %}
+          {% for tag in post.tag.all %}
+          <a
+            href="{% url 'tags' tag=tag.slug %}"
+            style="text-decoration: none; color: rgb(134, 90, 1)"
+            >{{tag}}</a
+          >
+          {% endfor %}
+        </p>
+      </div>
+      </div><br>  
+    </div>
+ 
+{% endfor %}
+</div>
+
 {% endblock %}
-              

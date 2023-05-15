@@ -1,22 +1,70 @@
 from django.contrib import admin
-from .models import Post
+from .models import Post, User, Tag, Category, Comment
 
-from .models import User
+from admin_auto_filters.filters import AutocompleteFilter
+from import_export.admin import ExportActionMixin
+
+from import_export.admin import ImportExportModelAdmin
 
 
-from django.shortcuts import render
-from .models import Post, Category, Author
 
 # Register your models here.
 
 
-admin.site.register(Post)
+# admin.site.register(User)
+# admin.site.register(Tag)
+# admin.site.register(Category)
+# admin.site.register(Comment)
 
-admin.site.register(User)
+class CategoryAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_filter = ['name']
+    search_fields = ['name'] 
+admin.site.register(Category, CategoryAdmin)
 
 
-admin.site.register(Author)
-admin.site.register(Category)
-admin.site.register(Post)
+class TagAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_filter = ['name']
+    search_fields = ['tag'] 
+admin.site.register(Tag, TagAdmin)
+
+class PostAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_filter = ['author', 'category', 'tag', 'published_date',]
+    list_display =('title' , 'thumbnail_image', 'author')
+    search_fields = ['title', 'name']
+    filter_horizontal = ['tag']
+    autocomplete_fields = ['category',]
+
+admin.site.register(Post, PostAdmin)
 
 
+class UserAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    search_fields = ['username'] 
+admin.site.register(User, UserAdmin)
+
+
+class CommentAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    list_filter = ['post', 'email',]
+    search_fields = ['username',] 
+    # autocomplete_fields = ('post',)
+admin.site.register(Comment, CommentAdmin)
+
+
+
+
+
+
+
+
+# # Register your models here.
+# class BookAdmin(ExportActionMixin, admin.ModelAdmin):
+#     list_display = ('title', 'description', 'author', 'year')
+# admin.site.register(Book, BookAdmin)
+
+
+    
+# class BlogAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+#         ...
+
+# admin.site.register(Blog, BlogAdmin)  
+
+  
